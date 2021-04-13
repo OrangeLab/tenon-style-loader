@@ -1,4 +1,4 @@
-export const defaultInclude = ['less', 'styl', 'scss']
+export const defaultInclude = ['less', 'stylus', 'scss', 'sass']
 
 export type Loader = string
 
