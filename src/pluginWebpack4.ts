@@ -5,11 +5,11 @@ import { Compiler } from 'webpack'
 const NS = 'tenon-style-plugin'
 class TenonStylePlugin{
   static NS = NS
-  options = {
-    include: defaultInclude
-  }
+  options: TenonStylePluginOptions
   constructor(options?:TenonStylePluginOptions){
-    this.options = Object.assign(this.options, options)
+    this.options = {
+      include: defaultInclude.concat(options?.include || [])
+    }
   }
 
   apply(compiler: Compiler){
