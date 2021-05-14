@@ -1,7 +1,7 @@
 export const defaultInclude:Array<string> = ['less', 'stylus', 'scss', 'sass']
 
 export type Loader = string
-
+export type RuleTest = RegExp | string
 export const hasTenonLoaderReg = /tenon-loader/
 export const tenonStyleLoaderPath = require.resolve('../index')
 export function isArray(array: any){
@@ -12,9 +12,12 @@ export function isObject(object:any){
   return Object.prototype.toString.call(object) === '[object Object]'
 }
 
-export function isAutoRule(rule:RegExp, includes: Array<string>){
+export function isAutoRule(rule:RuleTest, includes: Array<string>){
+  if(typeof rule === 'string'){
+    rule = new RegExp(rule)
+  }
   return includes.some((postfix:string) => {
-    return rule.test(`index.${postfix}`)
+    return (rule as RegExp).test(`index.${postfix}`)
   })
 }
 
