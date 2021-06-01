@@ -26,7 +26,8 @@ interface RuleSetMap {
 
 interface CompileStyleOptions {
   scoped: boolean
-  id?: string
+  id?: string,
+  packageName?: string
 }
 const isClassSelectorReg = /^\./
 const isTagSelectorReg = /\[.+\]/
@@ -109,12 +110,13 @@ function getCollectPlugin(
 }
 
 function generateCode(ruleSetMap: RuleSetMap, options: CompileStyleOptions) {
+  let {packageName} = options
   let styleCode = `
     var ruleSetMap = ${JSON.stringify(ruleSetMap)};
     var options = ${JSON.stringify(options)};
   `
   return `
-    import {collectStyle} from '@hummer/tenon-vue';
+    import {collectStyle} from '${packageName}';
     export default (function(){
       ${styleCode}
       return collectStyle(ruleSetMap, options);

@@ -21,11 +21,16 @@ export function isAutoRule(rule:RuleTest, includes: Array<string>){
   })
 }
 
-export function appendLoader(rule:any):Array<Loader>{
+export function appendLoader(rule:any, options:any):Array<Loader>{
   if(!rule){
     return []
   }
-  let loaders:Array<Loader> = [tenonStyleLoaderPath]
+  let loaders:Array<any> = [{
+    loader: tenonStyleLoaderPath,
+    options: {
+      packageName: options.packageName
+    }
+  }]
   if(isObject(rule.use)){
     loaders.push(rule.use.loader)
     return loaders
@@ -47,3 +52,5 @@ export function notHasTenonLoader(rule:any):Boolean{
   }
   return false
 }
+
+export const DefaultPackageName = '@hummer/tenon-vue'
