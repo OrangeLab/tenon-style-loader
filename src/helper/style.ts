@@ -93,6 +93,7 @@ function getCollectPlugin(
   ruleSetMap: RuleSetMap,
   customOptions: CompileStyleOptions
 ) {
+  // Postcss 8.3.0 中没有 plugin 方法声明
   const collectRulePlugin = postcss.plugin(
     'collect-rule',
     (options: any) => (root: Root) => {
