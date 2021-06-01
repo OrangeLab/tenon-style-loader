@@ -89,26 +89,6 @@ function handleSelector(
   return ''
 }
 
-function getCollectPlugin(
-  ruleSetMap: RuleSetMap,
-  customOptions: CompileStyleOptions
-) {
-  // Postcss 8.3.0 中没有 plugin 方法声明
-  const collectRulePlugin = postcss.plugin(
-    'collect-rule',
-    (options: any) => (root: Root) => {
-      root.each(function collectRule(node) {
-        if (node.type !== 'rule') {
-          // 不支持媒体查询
-          return
-        }
-        let { selector } = node
-        handleSelector(ruleSetMap, selector, node, customOptions)
-      })
-    }
-  )
-  return collectRulePlugin
-}
 
 function generateCode(ruleSetMap: RuleSetMap, options: CompileStyleOptions) {
   let {packageName} = options
@@ -152,4 +132,23 @@ export const compileStyle = function(
   }).css
   let code = generateCode(ruleSetMap, options)
   return code
+}
+
+
+export function getCollectPlugin(
+  ruleSetMap: RuleSetMap,
+  customOptions: CompileStyleOptions){
+  return {
+    postcssPlugin: 'collect-rule',
+    Once(root:Root){
+      root.each(function collectRule(node) {
+        if (node.type !== 'rule') {
+          // 不支持媒体查询
+          return
+        }
+        let { selector } = node
+        handleSelector(ruleSetMap, selector, node, customOptions)
+      })
+    }
+  }
 }
