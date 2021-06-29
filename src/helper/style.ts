@@ -1,38 +1,38 @@
-import postcss, { Root, Rule } from 'postcss'
-import { styleTransformer } from '@hummer/tenon-utils'
+import postcss, { Root, Rule } from "postcss";
+import { styleTransformer } from "@hummer/tenon-utils";
 
 enum MatchType {
   Class,
   ID,
-  Attr
+  Attr,
 }
 interface RuleNode {
-  selector: string
-  relation: string
-  matchType: MatchType
-  style: Record<string, string>
+  selector: string;
+  relation: string;
+  matchType: MatchType;
+  style: Record<string, string>;
 }
 interface RuleSet {
-  tagList: Array<RuleNode>
-  classList: Array<RuleNode>
-  idList: Array<RuleNode>
-  attrList: Array<RuleNode>
+  tagList: Array<RuleNode>;
+  classList: Array<RuleNode>;
+  idList: Array<RuleNode>;
+  attrList: Array<RuleNode>;
 }
 
 interface RuleSetMap {
-  global: RuleSet
-  [key: string]: RuleSet
+  global: RuleSet;
+  [key: string]: RuleSet;
 }
 
 interface CompileStyleOptions {
-  scoped: boolean
-  id?: string,
-  packageName?: string
+  scoped: boolean;
+  id?: string;
+  packageName?: string;
 }
-const isClassSelectorReg = /^\./
-const isTagSelectorReg = /\[.+\]/
-const isAttrSelectorReg = /\[.+\]/
-const isIDSelectorReg = /^\#/
+const isClassSelectorReg = /^\./;
+const isTagSelectorReg = /\[.+\]/;
+const isAttrSelectorReg = /\[.+\]/;
+const isIDSelectorReg = /^\#/;
 
 /**
  * 针对Class的Selector进行特殊处理
@@ -51,21 +51,21 @@ function handleSelector(
   node: Rule,
   options: CompileStyleOptions
 ) {
-  let selectorList = selector.split(/\s/).filter(item => !!item)
-  let lastSelector = selectorList.pop() as string
-  let style = getRuleStyle(node)
-  let { scoped, id = '' } = options
+  let selectorList = selector.split(/\s/).filter((item) => !!item);
+  let lastSelector = selectorList.pop() as string;
+  let style = getRuleStyle(node);
+  let { scoped, id = "" } = options;
   if (isTagSelectorReg.test(lastSelector)) {
-    return
+    return;
   }
   if (isClassSelectorReg.test(lastSelector)) {
-    let className = lastSelector.slice(1)
+    let className = lastSelector.slice(1);
     let classRule = {
       selector: className,
       matchType: MatchType.Class,
-      relation: '',
-      style: style
-    }
+      relation: "",
+      style: style,
+    };
     // 处理样式隔离问题
     if (scoped) {
       if (!ruleSetMap[id]) {
@@ -73,49 +73,48 @@ function handleSelector(
           tagList: [],
           classList: [],
           idList: [],
-          attrList: []
-        }
+          attrList: [],
+        };
       }
-      ruleSetMap[id].classList.push(classRule)
+      ruleSetMap[id].classList.push(classRule);
     } else {
-      ruleSetMap.global.classList.push(classRule)
+      ruleSetMap.global.classList.push(classRule);
     }
-    return
+    return;
   }
   if (isAttrSelectorReg.test(lastSelector)) {
   }
   if (isIDSelectorReg.test(lastSelector)) {
   }
-  return ''
+  return "";
 }
 
-
 function generateCode(ruleSetMap: RuleSetMap, options: CompileStyleOptions) {
-  let {packageName} = options
+  let { packageName } = options;
   let styleCode = `
     var ruleSetMap = ${JSON.stringify(ruleSetMap)};
     var options = ${JSON.stringify(options)};
-  `
+  `;
   return `
     import {collectStyle} from '${packageName}';
     export default (function(){
       ${styleCode}
       return collectStyle(ruleSetMap, options);
     })();
-  `
+  `;
 }
 
 function getRuleStyle(node: Rule): Record<string, string> {
-  let style: any = {}
+  let style: any = {};
   node.each((item: any) => {
-    let { prop, value } = item
-    style[prop] = value
-  })
-  style = styleTransformer.transformStyle(style)
-  return style
+    let { prop, value } = item;
+    style[prop] = value;
+  });
+  style = styleTransformer.transformStyle(style);
+  return style;
 }
 
-export const compileStyle = function(
+export const compileStyle = function (
   source: string,
   options: CompileStyleOptions = { scoped: false }
 ) {
@@ -124,31 +123,31 @@ export const compileStyle = function(
       tagList: [],
       classList: [],
       idList: [],
-      attrList: []
-    }
-  }
+      attrList: [],
+    },
+  };
   postcss([getCollectPlugin(ruleSetMap, options)]).process(source, {
-    from: undefined
-  }).css
-  let code = generateCode(ruleSetMap, options)
-  return code
-}
-
+    from: undefined,
+  }).css;
+  let code = generateCode(ruleSetMap, options);
+  return code;
+};
 
 export function getCollectPlugin(
   ruleSetMap: RuleSetMap,
-  customOptions: CompileStyleOptions){
+  customOptions: CompileStyleOptions
+) {
   return {
-    postcssPlugin: 'collect-rule',
-    Once(root:Root){
+    postcssPlugin: "collect-rule",
+    Once(root: Root) {
       root.each(function collectRule(node) {
-        if (node.type !== 'rule') {
+        if (node.type !== "rule") {
           // 不支持媒体查询
-          return
+          return;
         }
-        let { selector } = node
-        handleSelector(ruleSetMap, selector, node, customOptions)
-      })
-    }
-  }
+        let { selector } = node;
+        handleSelector(ruleSetMap, selector, node, customOptions);
+      });
+    },
+  };
 }

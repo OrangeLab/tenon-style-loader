@@ -1,4 +1,4 @@
-export interface TenonStylePluginOptions{
-  include?: Array<string>,
-  packageName?: string
+export interface TenonStylePluginOptions {
+  include?: Array<string>;
+  packageName?: string;
 }
