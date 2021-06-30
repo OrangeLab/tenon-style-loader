@@ -33,6 +33,7 @@ const isClassSelectorReg = /^\./;
 const isTagSelectorReg = /\[.+\]/;
 const isAttrSelectorReg = /\[.+\]/;
 const isIDSelectorReg = /^\#/;
+const isCommaSelectorReg = /,/;
 
 /**
  * 针对Class的Selector进行特殊处理
@@ -51,7 +52,7 @@ function handleSelector(
   node: Rule,
   options: CompileStyleOptions
 ) {
-  let selectorList = selector.split(/\s/).filter((item) => !!item);
+  let selectorList = selector.split(/[\s,]/).filter((item) => !!item);
   let lastSelector = selectorList.pop() as string;
   let style = getRuleStyle(node);
   let { scoped, id = "" } = options;
@@ -146,8 +147,20 @@ export function getCollectPlugin(
           return;
         }
         let { selector } = node;
-        handleSelector(ruleSetMap, selector, node, customOptions);
+        if (isCommaSelector(selector)) {
+          // Handle ',' case
+          let selectors = selector.split(/,/).filter((item) => !!item);
+          selectors.forEach((item) => {
+            handleSelector(ruleSetMap, item, node, customOptions);
+          });
+        } else {
+          handleSelector(ruleSetMap, selector, node, customOptions);
+        }
       });
     },
   };
+}
+
+function isCommaSelector(selector: string) {
+  return isCommaSelectorReg.test(selector);
 }

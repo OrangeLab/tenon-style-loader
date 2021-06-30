@@ -1,5 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`style @media style 1`] = `
+"
+    import {collectStyle} from '@hummer/tenon-vue';
+    export default (function(){
+      
+    var ruleSetMap = {\\"global\\":{\\"tagList\\":[],\\"classList\\":[],\\"idList\\":[],\\"attrList\\":[]}};
+    var options = {\\"scoped\\":false,\\"packageName\\":\\"@hummer/tenon-vue\\"};
+  
+      return collectStyle(ruleSetMap, options);
+    })();
+  "
+`;
+
 exports[`style Compile Style Base 1`] = `
 "
     import {collectStyle} from '@hummer/tenon-vue';
@@ -7,6 +20,58 @@ exports[`style Compile Style Base 1`] = `
       
     var ruleSetMap = {\\"global\\":{\\"tagList\\":[],\\"classList\\":[{\\"selector\\":\\"box\\",\\"matchType\\":0,\\"relation\\":\\"\\",\\"style\\":{\\"boxSizing\\":\\"border-box\\"}}],\\"idList\\":[],\\"attrList\\":[]}};
     var options = {\\"scoped\\":false,\\"packageName\\":\\"@hummer/tenon-vue\\"};
+  
+      return collectStyle(ruleSetMap, options);
+    })();
+  "
+`;
+
+exports[`style Compile Style With Comma Selector 1`] = `
+"
+    import {collectStyle} from '@hummer/tenon-vue';
+    export default (function(){
+      
+    var ruleSetMap = {\\"global\\":{\\"tagList\\":[],\\"classList\\":[{\\"selector\\":\\"box\\",\\"matchType\\":0,\\"relation\\":\\"\\",\\"style\\":{\\"boxSizing\\":\\"border-box\\"}},{\\"selector\\":\\"box-item\\",\\"matchType\\":0,\\"relation\\":\\"\\",\\"style\\":{\\"boxSizing\\":\\"border-box\\"}}],\\"idList\\":[],\\"attrList\\":[]}};
+    var options = {\\"scoped\\":false,\\"packageName\\":\\"@hummer/tenon-vue\\"};
+  
+      return collectStyle(ruleSetMap, options);
+    })();
+  "
+`;
+
+exports[`style Compile Style With Multi Selector 1`] = `
+"
+    import {collectStyle} from '@hummer/tenon-vue';
+    export default (function(){
+      
+    var ruleSetMap = {\\"global\\":{\\"tagList\\":[],\\"classList\\":[{\\"selector\\":\\"box.box-item\\",\\"matchType\\":0,\\"relation\\":\\"\\",\\"style\\":{\\"boxSizing\\":\\"border-box\\"}}],\\"idList\\":[],\\"attrList\\":[]}};
+    var options = {\\"scoped\\":false,\\"packageName\\":\\"@hummer/tenon-vue\\"};
+  
+      return collectStyle(ruleSetMap, options);
+    })();
+  "
+`;
+
+exports[`style Compile Style With Multi Selector2 1`] = `
+"
+    import {collectStyle} from '@hummer/tenon-vue';
+    export default (function(){
+      
+    var ruleSetMap = {\\"global\\":{\\"tagList\\":[],\\"classList\\":[{\\"selector\\":\\"box-item\\",\\"matchType\\":0,\\"relation\\":\\"\\",\\"style\\":{\\"boxSizing\\":\\"border-box\\"}}],\\"idList\\":[],\\"attrList\\":[]}};
+    var options = {\\"scoped\\":false,\\"packageName\\":\\"@hummer/tenon-vue\\"};
+  
+      return collectStyle(ruleSetMap, options);
+    })();
+  "
+`;
+
+exports[`style Compile Style With Scoped 1`] = `
+"
+    import {collectStyle} from '@hummer/tenon-vue';
+    export default (function(){
+      
+    var ruleSetMap = {\\"global\\":{\\"tagList\\":[],\\"classList\\":[],\\"idList\\":[],\\"attrList\\":[]},\\"test\\":{\\"tagList\\":[],\\"classList\\":[{\\"selector\\":\\"box\\",\\"matchType\\":0,\\"relation\\":\\"\\",\\"style\\":{\\"boxSizing\\":\\"border-box\\"}}],\\"idList\\":[],\\"attrList\\":[]}};
+    var options = {\\"scoped\\":true,\\"id\\":\\"test\\",\\"packageName\\":\\"@hummer/tenon-vue\\"};
   
       return collectStyle(ruleSetMap, options);
     })();
