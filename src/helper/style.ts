@@ -5,6 +5,14 @@ enum MatchType {
   Class,
   ID,
   Attr,
+  Tag,
+}
+
+enum RuleList {
+  ClassList = "classList",
+  TagList = "tagList",
+  IdList = "idList",
+  AttrList = "attrList",
 }
 interface RuleNode {
   selector: string;
@@ -15,8 +23,8 @@ interface RuleNode {
 interface RuleSet {
   tagList: Array<RuleNode>;
   classList: Array<RuleNode>;
-  idList: Array<RuleNode>;
-  attrList: Array<RuleNode>;
+  idList?: Array<RuleNode>; // Id List 可选，减少包体积；等待支持 Id Select 功能后，添加该选项
+  attrList?: Array<RuleNode>; // Attr List 可选，减少包体积；等待支持 Id Select 功能后，添加该选项
 }
 
 interface RuleSetMap {
@@ -29,6 +37,13 @@ interface CompileStyleOptions {
   id?: string;
   packageName?: string;
 }
+
+const MatchTypeList = {
+  [MatchType.Class]: RuleList.ClassList,
+  [MatchType.Attr]: RuleList.AttrList,
+  [MatchType.ID]: RuleList.IdList,
+  [MatchType.Tag]: RuleList.TagList,
+};
 const isClassSelectorReg = /^\./;
 const isTagSelectorReg = /\[.+\]/;
 const isAttrSelectorReg = /\[.+\]/;
@@ -56,9 +71,7 @@ function handleSelector(
   let lastSelector = selectorList.pop() as string;
   let style = getRuleStyle(node);
   let { scoped, id = "" } = options;
-  if (isTagSelectorReg.test(lastSelector)) {
-    return;
-  }
+
   if (isClassSelectorReg.test(lastSelector)) {
     let className = lastSelector.slice(1);
     let classRule = {
@@ -67,25 +80,19 @@ function handleSelector(
       relation: "",
       style: style,
     };
-    // 处理样式隔离问题
-    if (scoped) {
-      if (!ruleSetMap[id]) {
-        ruleSetMap[id] = {
-          tagList: [],
-          classList: [],
-          idList: [],
-          attrList: [],
-        };
-      }
-      ruleSetMap[id].classList.push(classRule);
-    } else {
-      ruleSetMap.global.classList.push(classRule);
-    }
+    collectRuleWithScoped(ruleSetMap, MatchType.Class, classRule, scoped, id);
     return;
   }
+  // TODO Support Attr Selector
   if (isAttrSelectorReg.test(lastSelector)) {
   }
+
+  // TODO Support ID Selector
   if (isIDSelectorReg.test(lastSelector)) {
+  }
+
+  // TODO Support Tag Selector
+  if (isTagSelectorReg.test(lastSelector)) {
   }
   return "";
 }
@@ -163,4 +170,34 @@ export function getCollectPlugin(
 
 function isCommaSelector(selector: string) {
   return isCommaSelectorReg.test(selector);
+}
+
+/**
+ * 处理样式隔离
+ */
+function collectRuleWithScoped(
+  ruleSetMap: RuleSetMap,
+  type: MatchType,
+  rule: any,
+  scoped: boolean,
+  id?: string
+) {
+  if (scoped && id) {
+    // Support Scoped Css
+    if (!ruleSetMap[id]) {
+      ruleSetMap[id] = {
+        [RuleList.ClassList]: [],
+        [RuleList.TagList]: [],
+        // [RuleList.IdList]: [],
+        // [RuleList.AttrList]: [],
+      };
+    }
+    if (ruleSetMap[id][MatchTypeList[type]]) {
+      ruleSetMap[id][MatchTypeList[type]]?.push(rule);
+    }
+  } else {
+    if (ruleSetMap.global[MatchTypeList[type]]) {
+      ruleSetMap.global[MatchTypeList[type]]?.push(rule);
+    }
+  }
 }
