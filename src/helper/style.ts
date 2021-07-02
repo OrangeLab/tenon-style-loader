@@ -8,6 +8,7 @@ import {
   RuleSet,
   ClassRule,
   Rule as CssRule,
+  Selector,
 } from "../style";
 
 const isClassSelectorReg = /^\./;
@@ -40,7 +41,8 @@ function handleSelector(
 
   if (isClassSelectorReg.test(lastSelector)) {
     let className = lastSelector.slice(1);
-    let classRule = new ClassRule(className, style);
+    let selector = new Selector(className, MatchType.Class);
+    let classRule = new ClassRule(selector, style);
     collectRuleWithScoped(ruleSetMap, MatchType.Class, classRule, scoped, id);
     return;
   }

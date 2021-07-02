@@ -1,6 +1,4 @@
-import { StyleRelation } from "./style-relation";
-
-export type Selector = string;
+import { Selector } from "./selector";
 export interface Style {
   [key: string]: string | number;
 }
@@ -80,15 +78,10 @@ export class RuleSet {
 export class Rule {
   public selector: Selector;
   public matchType: MatchType;
-  public relation: StyleRelation | null = null;
   public style: Style;
   constructor(selector: Selector, style: Style) {
     this.selector = selector;
     this.style = style;
-  }
-
-  appendRelation(relation: StyleRelation) {
-    this.relation = relation;
   }
 }
 
