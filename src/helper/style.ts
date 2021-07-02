@@ -1,49 +1,15 @@
 import postcss, { Root, Rule } from "postcss";
+
 import { styleTransformer } from "@hummer/tenon-utils";
+import {
+  RuleSetMap,
+  MatchType,
+  CompileStyleOptions,
+  RuleSet,
+  ClassRule,
+  Rule as CssRule,
+} from "../style";
 
-enum MatchType {
-  Class,
-  ID,
-  Attr,
-  Tag,
-}
-
-enum RuleList {
-  ClassList = "classList",
-  TagList = "tagList",
-  IdList = "idList",
-  AttrList = "attrList",
-}
-interface RuleNode {
-  selector: string;
-  relation: string;
-  matchType: MatchType;
-  style: Record<string, string>;
-}
-interface RuleSet {
-  tagList: Array<RuleNode>;
-  classList: Array<RuleNode>;
-  idList?: Array<RuleNode>; // Id List 可选，减少包体积；等待支持 Id Select 功能后，添加该选项
-  attrList?: Array<RuleNode>; // Attr List 可选，减少包体积；等待支持 Id Select 功能后，添加该选项
-}
-
-interface RuleSetMap {
-  global: RuleSet;
-  [key: string]: RuleSet;
-}
-
-interface CompileStyleOptions {
-  scoped: boolean;
-  id?: string;
-  packageName?: string;
-}
-
-const MatchTypeList = {
-  [MatchType.Class]: RuleList.ClassList,
-  [MatchType.Attr]: RuleList.AttrList,
-  [MatchType.ID]: RuleList.IdList,
-  [MatchType.Tag]: RuleList.TagList,
-};
 const isClassSelectorReg = /^\./;
 const isTagSelectorReg = /\[.+\]/;
 const isAttrSelectorReg = /\[.+\]/;
@@ -74,12 +40,7 @@ function handleSelector(
 
   if (isClassSelectorReg.test(lastSelector)) {
     let className = lastSelector.slice(1);
-    let classRule = {
-      selector: className,
-      matchType: MatchType.Class,
-      relation: "",
-      style: style,
-    };
+    let classRule = new ClassRule(className, style);
     collectRuleWithScoped(ruleSetMap, MatchType.Class, classRule, scoped, id);
     return;
   }
@@ -100,7 +61,7 @@ function handleSelector(
 function generateCode(ruleSetMap: RuleSetMap, options: CompileStyleOptions) {
   let { packageName } = options;
   let styleCode = `
-    var ruleSetMap = ${JSON.stringify(ruleSetMap)};
+    var ruleSetMap = ${ruleSetMap.toJsonString()};
     var options = ${JSON.stringify(options)};
   `;
   return `
@@ -126,14 +87,7 @@ export const compileStyle = function (
   source: string,
   options: CompileStyleOptions = { scoped: false }
 ) {
-  let ruleSetMap: RuleSetMap = {
-    global: {
-      tagList: [],
-      classList: [],
-      idList: [],
-      attrList: [],
-    },
-  };
+  let ruleSetMap = new RuleSetMap();
   postcss([getCollectPlugin(ruleSetMap, options)]).process(source, {
     from: undefined,
   }).css;
@@ -178,26 +132,19 @@ function isCommaSelector(selector: string) {
 function collectRuleWithScoped(
   ruleSetMap: RuleSetMap,
   type: MatchType,
-  rule: any,
+  rule: CssRule,
   scoped: boolean,
   id?: string
 ) {
   if (scoped && id) {
     // Support Scoped Css
-    if (!ruleSetMap[id]) {
-      ruleSetMap[id] = {
-        [RuleList.ClassList]: [],
-        [RuleList.TagList]: [],
-        // [RuleList.IdList]: [],
-        // [RuleList.AttrList]: [],
-      };
+    let ruleSet = ruleSetMap.getItem(id);
+    if (!ruleSet) {
+      ruleSet = new RuleSet();
+      ruleSetMap.setItem(id, ruleSet);
     }
-    if (ruleSetMap[id][MatchTypeList[type]]) {
-      ruleSetMap[id][MatchTypeList[type]]?.push(rule);
-    }
+    ruleSet.appendRule(type, rule);
   } else {
-    if (ruleSetMap.global[MatchTypeList[type]]) {
-      ruleSetMap.global[MatchTypeList[type]]?.push(rule);
-    }
+    ruleSetMap.global.appendRule(type, rule);
   }
 }
