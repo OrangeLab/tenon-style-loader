@@ -76,11 +76,14 @@ export class RuleSet {
 }
 
 export class Rule {
-  public selector: Selector;
+  public selector: string;
+  public n_selector: Selector;
   public matchType: MatchType;
   public style: Style;
   constructor(selector: Selector, style: Style) {
-    this.selector = selector;
+    this.selector = selector.value;
+    // 向下兼容
+    this.n_selector = selector;
     this.style = style;
   }
 }
