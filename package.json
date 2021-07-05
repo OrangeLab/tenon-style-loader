@@ -14,7 +14,7 @@
     "pretest": "tsc",
     "test": "yarn lint && jest --env node",
     "release": "npm run build && node ./scripts/release.js",
-    "lint": "prettier --write --parser typescript \"{src,test}/**/*.ts\""
+    "lint": "prettier --write --parser typescript \"{src,__tests__}/**/*.ts\""
   },
   "publishConfig": {
     "access": "public",

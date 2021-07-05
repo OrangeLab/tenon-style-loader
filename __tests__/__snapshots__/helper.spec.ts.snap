@@ -18,7 +18,7 @@ exports[`style Compile Style Base 1`] = `
     import {collectStyle} from '@hummer/tenon-vue';
     export default (function(){
       
-    var ruleSetMap = {\\"global\\":{\\"classList\\":[{\\"relation\\":null,\\"selector\\":\\"box\\",\\"style\\":{\\"boxSizing\\":\\"border-box\\"},\\"matchType\\":0}]}};
+    var ruleSetMap = {\\"global\\":{\\"classList\\":[{\\"selector\\":{\\"next\\":null,\\"value\\":\\"box\\",\\"matchType\\":0,\\"relation\\":0},\\"style\\":{\\"boxSizing\\":\\"border-box\\"},\\"matchType\\":0}]}};
     var options = {\\"scoped\\":false,\\"packageName\\":\\"@hummer/tenon-vue\\"};
   
       return collectStyle(ruleSetMap, options);
@@ -31,7 +31,7 @@ exports[`style Compile Style With Comma Selector 1`] = `
     import {collectStyle} from '@hummer/tenon-vue';
     export default (function(){
       
-    var ruleSetMap = {\\"global\\":{\\"classList\\":[{\\"relation\\":null,\\"selector\\":\\"box\\",\\"style\\":{\\"boxSizing\\":\\"border-box\\"},\\"matchType\\":0},{\\"relation\\":null,\\"selector\\":\\"box-item\\",\\"style\\":{\\"boxSizing\\":\\"border-box\\"},\\"matchType\\":0}]}};
+    var ruleSetMap = {\\"global\\":{\\"classList\\":[{\\"selector\\":{\\"next\\":null,\\"value\\":\\"box\\",\\"matchType\\":0,\\"relation\\":0},\\"style\\":{\\"boxSizing\\":\\"border-box\\"},\\"matchType\\":0},{\\"selector\\":{\\"next\\":null,\\"value\\":\\"box-item\\",\\"matchType\\":0,\\"relation\\":0},\\"style\\":{\\"boxSizing\\":\\"border-box\\"},\\"matchType\\":0}]}};
     var options = {\\"scoped\\":false,\\"packageName\\":\\"@hummer/tenon-vue\\"};
   
       return collectStyle(ruleSetMap, options);
@@ -44,7 +44,7 @@ exports[`style Compile Style With Multi Selector 1`] = `
     import {collectStyle} from '@hummer/tenon-vue';
     export default (function(){
       
-    var ruleSetMap = {\\"global\\":{\\"classList\\":[{\\"relation\\":null,\\"selector\\":\\"box.box-item\\",\\"style\\":{\\"boxSizing\\":\\"border-box\\"},\\"matchType\\":0}]}};
+    var ruleSetMap = {\\"global\\":{\\"classList\\":[{\\"selector\\":{\\"next\\":{\\"next\\":null,\\"value\\":\\"box\\",\\"matchType\\":0,\\"relation\\":0},\\"value\\":\\"box-item\\",\\"matchType\\":0,\\"relation\\":0},\\"style\\":{\\"boxSizing\\":\\"border-box\\"},\\"matchType\\":0}]}};
     var options = {\\"scoped\\":false,\\"packageName\\":\\"@hummer/tenon-vue\\"};
   
       return collectStyle(ruleSetMap, options);
@@ -57,7 +57,7 @@ exports[`style Compile Style With Multi Selector2 1`] = `
     import {collectStyle} from '@hummer/tenon-vue';
     export default (function(){
       
-    var ruleSetMap = {\\"global\\":{\\"classList\\":[{\\"relation\\":null,\\"selector\\":\\"box-item\\",\\"style\\":{\\"boxSizing\\":\\"border-box\\"},\\"matchType\\":0}]}};
+    var ruleSetMap = {\\"global\\":{\\"classList\\":[{\\"selector\\":{\\"next\\":null,\\"value\\":\\"box-item\\",\\"matchType\\":0,\\"relation\\":1},\\"style\\":{\\"boxSizing\\":\\"border-box\\"},\\"matchType\\":0}]}};
     var options = {\\"scoped\\":false,\\"packageName\\":\\"@hummer/tenon-vue\\"};
   
       return collectStyle(ruleSetMap, options);
@@ -70,7 +70,7 @@ exports[`style Compile Style With Scoped 1`] = `
     import {collectStyle} from '@hummer/tenon-vue';
     export default (function(){
       
-    var ruleSetMap = {\\"global\\":{\\"classList\\":[]},\\"test\\":{\\"classList\\":[{\\"relation\\":null,\\"selector\\":\\"box\\",\\"style\\":{\\"boxSizing\\":\\"border-box\\"},\\"matchType\\":0}]}};
+    var ruleSetMap = {\\"global\\":{\\"classList\\":[]},\\"test\\":{\\"classList\\":[{\\"selector\\":{\\"next\\":null,\\"value\\":\\"box\\",\\"matchType\\":0,\\"relation\\":0},\\"style\\":{\\"boxSizing\\":\\"border-box\\"},\\"matchType\\":0}]}};
     var options = {\\"scoped\\":true,\\"id\\":\\"test\\",\\"packageName\\":\\"@hummer/tenon-vue\\"};
   
       return collectStyle(ruleSetMap, options);

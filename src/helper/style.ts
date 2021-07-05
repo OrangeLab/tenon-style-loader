@@ -8,13 +8,11 @@ import {
   RuleSet,
   ClassRule,
   Rule as CssRule,
+  parseSelector,
   Selector,
+  RelationType,
 } from "../style";
 
-const isClassSelectorReg = /^\./;
-const isTagSelectorReg = /\[.+\]/;
-const isAttrSelectorReg = /\[.+\]/;
-const isIDSelectorReg = /^\#/;
 const isCommaSelectorReg = /,/;
 
 /**
@@ -34,30 +32,29 @@ function handleSelector(
   node: Rule,
   options: CompileStyleOptions
 ) {
-  let selectorList = selector.split(/[\s,]/).filter((item) => !!item);
-  let lastSelector = selectorList.pop() as string;
+  let ansSelector = parseSelector(selector);
+  if (!ansSelector) {
+    return null;
+  }
   let style = getRuleStyle(node);
   let { scoped, id = "" } = options;
 
-  if (isClassSelectorReg.test(lastSelector)) {
-    let className = lastSelector.slice(1);
-    let selector = new Selector(className, MatchType.Class);
-    let classRule = new ClassRule(selector, style);
-    collectRuleWithScoped(ruleSetMap, MatchType.Class, classRule, scoped, id);
-    return;
+  let theSelector = standardSelector(ansSelector);
+  // Handle Selector
+  switch (ansSelector.matchType) {
+    case MatchType.Class:
+      let classRule = new ClassRule(theSelector, style);
+      collectRuleWithScoped(ruleSetMap, MatchType.Class, classRule, scoped, id);
+      break;
+    case MatchType.Attr:
+      break;
+    case MatchType.Tag:
+      break;
+    case MatchType.ID:
+      break;
+    default:
+      break;
   }
-  // TODO Support Attr Selector
-  if (isAttrSelectorReg.test(lastSelector)) {
-  }
-
-  // TODO Support ID Selector
-  if (isIDSelectorReg.test(lastSelector)) {
-  }
-
-  // TODO Support Tag Selector
-  if (isTagSelectorReg.test(lastSelector)) {
-  }
-  return "";
 }
 
 function generateCode(ruleSetMap: RuleSetMap, options: CompileStyleOptions) {
@@ -97,7 +94,7 @@ export const compileStyle = function (
   return code;
 };
 
-export function getCollectPlugin(
+function getCollectPlugin(
   ruleSetMap: RuleSetMap,
   customOptions: CompileStyleOptions
 ) {
@@ -149,4 +146,18 @@ function collectRuleWithScoped(
   } else {
     ruleSetMap.global.appendRule(type, rule);
   }
+}
+
+/**
+ * 标准化 Selector
+ * 进行向上的兼容，渐进式的提供新功能
+ */
+function standardSelector(selector: Selector): Selector {
+  // 保持兼容，先只露出 .a.b 的选择器，其它的过滤掉
+  if (selector.relation === RelationType.DescendantSpace) {
+    // 暂时不支持级联选择器
+    selector.next = null;
+    return selector;
+  }
+  return selector;
 }

@@ -22,7 +22,7 @@ describe("style", () => {
     `;
     let code = compileStyle(styleContent, {
       scoped: true,
-      id: 'test',
+      id: "test",
       packageName: "@hummer/tenon-vue",
     });
     expect(code).toMatchSnapshot();
