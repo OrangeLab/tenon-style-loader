@@ -54,7 +54,20 @@ describe("style", () => {
   });
   test("Compile Style With Comma Selector", () => {
     let styleContent = `
-      .box,.box-item{
+      .box, .box-item{
+        box-sizing: border-box;
+      }
+    `;
+    let code = compileStyle(styleContent, {
+      scoped: false,
+      packageName: "@hummer/tenon-vue",
+    });
+    expect(code).toMatchSnapshot();
+  });
+  test("Compile Style With Comma Selector1(Less)", () => {
+    let styleContent = `
+      .box, 
+      .box-item{
         box-sizing: border-box;
       }
     `;

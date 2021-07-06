@@ -39,6 +39,19 @@ exports[`style Compile Style With Comma Selector 1`] = `
   "
 `;
 
+exports[`style Compile Style With Comma Selector1(Less) 1`] = `
+"
+    import {collectStyle} from '@hummer/tenon-vue';
+    export default (function(){
+      
+    var ruleSetMap = {\\"global\\":{\\"classList\\":[{\\"selector\\":\\"box\\",\\"n_selector\\":{\\"next\\":null,\\"value\\":\\"box\\",\\"matchType\\":0,\\"relation\\":0},\\"style\\":{\\"boxSizing\\":\\"border-box\\"},\\"matchType\\":0},{\\"selector\\":\\"box-item\\",\\"n_selector\\":{\\"next\\":null,\\"value\\":\\"box-item\\",\\"matchType\\":0,\\"relation\\":0},\\"style\\":{\\"boxSizing\\":\\"border-box\\"},\\"matchType\\":0}]}};
+    var options = {\\"scoped\\":false,\\"packageName\\":\\"@hummer/tenon-vue\\"};
+  
+      return collectStyle(ruleSetMap, options);
+    })();
+  "
+`;
+
 exports[`style Compile Style With Multi Selector 1`] = `
 "
     import {collectStyle} from '@hummer/tenon-vue';

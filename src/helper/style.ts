@@ -111,7 +111,7 @@ function getCollectPlugin(
           // Handle ',' case
           let selectors = selector.split(/,/).filter((item) => !!item);
           selectors.forEach((item) => {
-            handleSelector(ruleSetMap, item, node, customOptions);
+            handleSelector(ruleSetMap, item.trim(), node, customOptions);
           });
         } else {
           handleSelector(ruleSetMap, selector, node, customOptions);
