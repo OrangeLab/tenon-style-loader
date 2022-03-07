@@ -154,10 +154,12 @@ function collectRuleWithScoped(
  */
 function standardSelector(selector: Selector): Selector {
   // 保持兼容，先只露出 .a.b 的选择器，其它的过滤掉
-  if (selector.relation === RelationType.DescendantSpace) {
-    // 暂时不支持级联选择器
-    selector.next = null;
-    return selector;
-  }
+
+  // 不再过滤级联选择器
+  // if (selector.relation === RelationType.DescendantSpace) {
+  //   // 暂时不支持级联选择器
+  //   selector.next = null;
+  //   return selector;
+  // }
   return selector;
 }
