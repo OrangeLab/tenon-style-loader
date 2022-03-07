@@ -10,7 +10,6 @@ import {
   Rule as CssRule,
   parseSelector,
   Selector,
-  RelationType,
 } from "../style";
 
 const isCommaSelectorReg = /,/;
